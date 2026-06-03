@@ -1139,5 +1139,13 @@
   "Document change": "Änderung dokumentieren",
   "Review up to date · next {{date}}": "Prüfung aktuell · nächste {{date}}",
   "Review overdue — this page needs to be reviewed.": "Prüfung überfällig — diese Seite muss geprüft werden.",
-  "Review due soon — this page should be reviewed.": "Prüfung bald fällig — diese Seite sollte geprüft werden."
+  "Review due soon — this page should be reviewed.": "Prüfung bald fällig — diese Seite sollte geprüft werden.",
+  "Performed by": "Durchgeführt von",
+  "Detail": "Detail",
+  "Yes": "Ja",
+  "No": "Nein",
+  "Export CSV": "CSV-Export",
+  "Search change log": "Änderungsprotokoll durchsuchen",
+  "Export failed": "Export fehlgeschlagen",
+  "No matching changes.": "Keine passenden Änderungen."
 }

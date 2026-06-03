@@ -51,6 +51,16 @@ export class ChangeSetController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Post('export')
+  async export(
+    @Body() dto: ChangeSetScopeDto,
+    @Body() pagination: PaginationOptions,
+    @AuthUser() user: User,
+  ) {
+    return this.changeSetService.exportData(dto, pagination, user);
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Post('settings/get')
   async getSettings(@Body() dto: ChangeSetScopeDto, @AuthUser() user: User) {
     return this.changeSetService.getChangeLogInfo(dto, user);

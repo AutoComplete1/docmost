@@ -20,13 +20,16 @@ import {
   ICreateChangeSet,
 } from "@/features/compliance/types/compliance.types.ts";
 import { IPagination } from "@/lib/types.ts";
+import { useSetAtom } from "jotai";
+import { changeLogDirtyAtom } from "@/features/compliance/atoms/compliance-atoms.ts";
 
 export function useChangeSetsQuery(
   scope: IComplianceScope,
+  query?: string,
 ): UseInfiniteQueryResult<InfiniteData<IPagination<IChangeSet>, unknown>> {
   return useInfiniteQuery({
-    queryKey: ["change-sets", scope],
-    queryFn: ({ pageParam }) => getChangeSets(scope, pageParam),
+    queryKey: ["change-sets", scope, query ?? ""],
+    queryFn: ({ pageParam }) => getChangeSets(scope, pageParam, query),
     enabled: !!(scope.pageId || scope.spaceId),
     gcTime: 0,
     initialPageParam: undefined,
@@ -36,10 +39,14 @@ export function useChangeSetsQuery(
 
 export function useCreateChangeSetMutation() {
   const queryClient = useQueryClient();
+  const setDirty = useSetAtom(changeLogDirtyAtom);
 
   return useMutation<IChangeSet, Error, ICreateChangeSet>({
     mutationFn: (data) => createChangeSet(data),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
+      if (variables.pageId) {
+        setDirty((prev) => ({ ...prev, [variables.pageId!]: false }));
+      }
       queryClient.invalidateQueries({ queryKey: ["change-sets"] });
       queryClient.invalidateQueries({ queryKey: ["change-log-info"] });
     },

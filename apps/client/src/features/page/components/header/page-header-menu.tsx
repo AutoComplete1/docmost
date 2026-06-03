@@ -29,7 +29,8 @@ import {
 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useAsideTriggerProps } from "@/hooks/use-toggle-aside.tsx";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { changeLogModalAtom } from "@/features/compliance/atoms/compliance-atoms.ts";
 import { historyAtoms } from "@/features/page-history/atoms/history-atoms.ts";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { useClipboard } from "@/hooks/use-clipboard";
@@ -83,7 +84,7 @@ export default function PageHeaderMenu({ readOnly }: PageHeaderMenuProps) {
   const { t } = useTranslation();
   const commentsTriggerProps = useAsideTriggerProps("comments");
   const tocTriggerProps = useAsideTriggerProps("toc");
-  const changelogTriggerProps = useAsideTriggerProps("changelog");
+  const setChangeLogModalOpen = useSetAtom(changeLogModalAtom);
   const { pageSlug } = useParams();
   const { data: page } = usePageQuery({
     pageId: extractPageSlugId(pageSlug),
@@ -150,7 +151,7 @@ export default function PageHeaderMenu({ readOnly }: PageHeaderMenuProps) {
           variant="subtle"
           color="dark"
           aria-label={t("Change log")}
-          {...changelogTriggerProps}
+          onClick={() => setChangeLogModalOpen(true)}
         >
           <IconClipboardText size={20} stroke={2} />
         </ActionIcon>

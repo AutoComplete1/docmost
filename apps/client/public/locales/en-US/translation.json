@@ -1140,5 +1140,13 @@
   "Document change": "Document change",
   "Review up to date · next {{date}}": "Review up to date · next {{date}}",
   "Review overdue — this page needs to be reviewed.": "Review overdue — this page needs to be reviewed.",
-  "Review due soon — this page should be reviewed.": "Review due soon — this page should be reviewed."
+  "Review due soon — this page should be reviewed.": "Review due soon — this page should be reviewed.",
+  "Performed by": "Performed by",
+  "Detail": "Detail",
+  "Yes": "Yes",
+  "No": "No",
+  "Export CSV": "Export CSV",
+  "Search change log": "Search change log",
+  "Export failed": "Export failed",
+  "No matching changes.": "No matching changes."
 }

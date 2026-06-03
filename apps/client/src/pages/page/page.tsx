@@ -4,6 +4,7 @@ import { FullEditor } from "@/features/editor/full-editor";
 import HistoryModal from "@/features/page-history/components/history-modal";
 import { Helmet } from "react-helmet-async";
 import PageHeader from "@/features/page/components/header/page-header.tsx";
+import ChangeLogModal from "@/features/compliance/components/change-log-modal.tsx";
 import { extractPageSlugId } from "@/lib";
 import { useGetSpaceBySlugQuery } from "@/features/space/queries/space-query.ts";
 import { useTranslation } from "react-i18next";
@@ -112,6 +113,7 @@ function PageContent({ pageSlug }: { pageSlug: string | undefined }) {
           canComment={canComment}
         />
         <MemoizedHistoryModal pageId={page.id} />
+        <ChangeLogModal pageId={page.id} canEdit={canEdit} />
       </div>
     )
   );

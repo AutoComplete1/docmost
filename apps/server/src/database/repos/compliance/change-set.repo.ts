@@ -69,25 +69,62 @@ export class ChangeSetRepo {
     scope: { pageId?: string; spaceId?: string },
     pagination: PaginationOptions,
   ) {
-    let query = this.db
+    return executeWithCursorPagination(
+      this.scopedQuery(scope, pagination.query),
+      {
+        perPage: pagination.limit,
+        cursor: pagination.cursor,
+        beforeCursor: pagination.beforeCursor,
+        fields: [{ expression: 'id', direction: 'desc' }],
+        parseCursor: (cursor) => ({ id: cursor.id }),
+      },
+    );
+  }
+
+  async findAllByScope(
+    scope: { pageId?: string; spaceId?: string },
+    query?: string,
+  ) {
+    return this.scopedQuery(scope, query)
+      .orderBy('createdAt', 'desc')
+      .limit(5000)
+      .execute();
+  }
+
+  private scopedQuery(
+    scope: { pageId?: string; spaceId?: string },
+    query?: string,
+  ) {
+    let qb = this.db
       .selectFrom('changeSets')
       .select(this.baseFields)
       .select((eb) => this.withPerformedBy(eb))
       .select((eb) => this.withEntries(eb));
 
-    if (scope.pageId) {
-      query = query.where('pageId', '=', scope.pageId);
-    } else {
-      query = query.where('spaceId', '=', scope.spaceId);
+    qb = scope.pageId
+      ? qb.where('pageId', '=', scope.pageId)
+      : qb.where('spaceId', '=', scope.spaceId);
+
+    if (query?.trim()) {
+      const q = `%${query.trim()}%`;
+      qb = qb.where((eb) =>
+        eb.or([
+          eb('reason', 'ilike', q),
+          eb('requestedBy', 'ilike', q),
+          eb('targetSystem', 'ilike', q),
+          eb('ticketRef', 'ilike', q),
+          eb.exists(
+            eb
+              .selectFrom('changeEntries')
+              .select('changeEntries.id')
+              .whereRef('changeEntries.changeSetId', '=', 'changeSets.id')
+              .where('changeEntries.summary', 'ilike', q),
+          ),
+        ]),
+      );
     }
 
-    return executeWithCursorPagination(query, {
-      perPage: pagination.limit,
-      cursor: pagination.cursor,
-      beforeCursor: pagination.beforeCursor,
-      fields: [{ expression: 'id', direction: 'desc' }],
-      parseCursor: (cursor) => ({ id: cursor.id }),
-    });
+    return qb;
   }
 
   async getLatestChangeAt(pageId: string): Promise<Date | undefined> {

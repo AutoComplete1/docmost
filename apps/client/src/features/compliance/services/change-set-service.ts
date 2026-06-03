@@ -20,10 +20,23 @@ export async function createChangeSet(
 export async function getChangeSets(
   scope: IComplianceScope,
   cursor?: string,
+  query?: string,
 ): Promise<IPagination<IChangeSet>> {
   const req = await api.post("/compliance/change-sets/list", {
     ...scope,
     cursor,
+    query,
+  });
+  return req.data;
+}
+
+export async function exportChangeSets(
+  scope: IComplianceScope,
+  query?: string,
+): Promise<IChangeSet[]> {
+  const req = await api.post<IChangeSet[]>("/compliance/change-sets/export", {
+    ...scope,
+    query,
   });
   return req.data;
 }

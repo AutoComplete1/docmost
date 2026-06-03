@@ -97,6 +97,23 @@ export class ChangeSetService {
     return this.changeSetRepo.findByScope(scope, pagination);
   }
 
+  async exportData(
+    scope: ChangeSetScopeDto,
+    pagination: PaginationOptions,
+    user: User,
+  ) {
+    const { spaceId } = await this.resolveScope(scope);
+
+    await this.assertAbility(
+      user,
+      spaceId,
+      SpaceCaslAction.Read,
+      SpaceCaslSubject.Page,
+    );
+
+    return this.changeSetRepo.findAllByScope(scope, pagination?.query);
+  }
+
   async findOne(changeSetId: string, user: User) {
     const changeSet = await this.changeSetRepo.findById(changeSetId);
     if (!changeSet) {

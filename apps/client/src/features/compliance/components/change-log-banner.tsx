@@ -1,8 +1,12 @@
 import { Alert, Button, Group, Text } from "@mantine/core";
 import { IconAlertTriangle } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
+import { useAtom, useAtomValue } from "jotai";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useChangeLogInfoQuery } from "@/features/compliance/queries/change-set-query.ts";
+import { changeLogDirtyAtom } from "@/features/compliance/atoms/compliance-atoms.ts";
+import { pageEditorAtom } from "@/features/editor/atoms/editor-atoms.ts";
 import ChangeSetFormModal from "@/features/compliance/components/change-set-form-modal.tsx";
 
 interface ChangeLogBannerProps {
@@ -17,8 +21,30 @@ export default function ChangeLogBanner({
   const { t } = useTranslation();
   const { data } = useChangeLogInfoQuery({ pageId });
   const [opened, { open, close }] = useDisclosure(false);
+  const editor = useAtomValue(pageEditorAtom);
+  const [dirtyMap, setDirty] = useAtom(changeLogDirtyAtom);
 
-  if (!data?.enabled || !data.undocumented) {
+  const enabled = !!data?.enabled;
+  const dirty = !!dirtyMap[pageId];
+
+  // Flag the page the moment the user actually types, so the banner shows
+  // immediately on the first keystroke — without waiting for the autosave that
+  // bumps the page's updatedAt (which is what the server-side check relies on).
+  useEffect(() => {
+    if (!enabled || !editor) return;
+
+    const handler = ({ transaction }) => {
+      if (!transaction.docChanged || !editor.isFocused) return;
+      setDirty((prev) => (prev[pageId] ? prev : { ...prev, [pageId]: true }));
+    };
+
+    editor.on("update", handler);
+    return () => {
+      editor.off("update", handler);
+    };
+  }, [enabled, editor, pageId, setDirty]);
+
+  if (!enabled || (!data?.undocumented && !dirty)) {
     return null;
   }
 
@@ -44,11 +70,7 @@ export default function ChangeLogBanner({
         )}
       </Group>
 
-      <ChangeSetFormModal
-        opened={opened}
-        onClose={close}
-        scope={{ pageId }}
-      />
+      <ChangeSetFormModal opened={opened} onClose={close} scope={{ pageId }} />
     </Alert>
   );
 }
