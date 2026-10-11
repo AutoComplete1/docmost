@@ -3,6 +3,9 @@ import {
   AiChats,
   AiChatMessages,
   Attachments,
+  BaseProperties,
+  BaseRows,
+  BaseViews,
   Comments,
   Groups,
   Labels,
@@ -28,12 +31,14 @@ import {
   AuthProviders,
   AuthAccounts,
   Shares,
+  PublicSpaces,
   Favorites,
   FileTasks,
   UserMfa as _UserMFA,
   UserSessions,
   ApiKeys,
   ScimTokens,
+  SiemDestinations,
   Watchers,
   Audit as _Audit,
   Templates,
@@ -42,6 +47,10 @@ import {
   ChangeLogSettings,
   ReviewSettings,
   ReviewRecords,
+  OauthClients,
+  OauthAuthorizationCodes,
+  OauthGrants,
+  OauthTokens,
 } from './db';
 import { PageEmbeddings } from '@docmost/db/types/embeddings.types';
 
@@ -149,6 +158,11 @@ export type Share = Selectable<Shares>;
 export type InsertableShare = Insertable<Shares>;
 export type UpdatableShare = Updateable<Omit<Shares, 'id'>>;
 
+// PublicSpace
+export type PublicSpace = Selectable<PublicSpaces>;
+export type InsertablePublicSpace = Insertable<PublicSpaces>;
+export type UpdatablePublicSpace = Updateable<Omit<PublicSpaces, 'id'>>;
+
 // Favorite
 export type Favorite = Selectable<Favorites>;
 export type InsertableFavorite = Insertable<Favorites>;
@@ -185,6 +199,13 @@ export type UpdatableApiKey = Updateable<Omit<ApiKeys, 'id'>>;
 export type ScimToken = Selectable<ScimTokens>;
 export type InsertableScimToken = Insertable<ScimTokens>;
 export type UpdatableScimToken = Updateable<Omit<ScimTokens, 'id'>>;
+
+// OAuth
+export type OAuthClient = Selectable<OauthClients>;
+export type InsertableOAuthClient = Insertable<OauthClients>;
+export type OAuthGrant = Selectable<OauthGrants>;
+export type OAuthAuthorizationCode = Selectable<OauthAuthorizationCodes>;
+export type OAuthToken = Selectable<OauthTokens>;
 
 // Page Embedding
 export type PageEmbedding = Selectable<PageEmbeddings>;
@@ -270,3 +291,23 @@ export type UpdatableReviewSetting = Updateable<Omit<ReviewSettings, 'id'>>;
 export type ReviewRecord = Selectable<ReviewRecords>;
 export type InsertableReviewRecord = Insertable<ReviewRecords>;
 export type UpdatableReviewRecord = Updateable<Omit<ReviewRecords, 'id'>>;
+
+// Base Property
+export type BaseProperty = Selectable<BaseProperties>;
+export type InsertableBaseProperty = Insertable<BaseProperties>;
+export type UpdatableBaseProperty = Updateable<Omit<BaseProperties, 'id'>>;
+
+// Base Row
+export type BaseRow = Selectable<BaseRows>;
+export type InsertableBaseRow = Insertable<BaseRows>;
+export type UpdatableBaseRow = Updateable<Omit<BaseRows, 'id'>>;
+
+// Base View
+export type BaseView = Selectable<BaseViews>;
+export type InsertableBaseView = Insertable<BaseViews>;
+export type UpdatableBaseView = Updateable<Omit<BaseViews, 'id'>>;
+
+// SIEM destinations
+export type SiemDestination = Selectable<SiemDestinations>;
+export type InsertableSiemDestination = Insertable<SiemDestinations>;
+export type UpdatableSiemDestination = Updateable<Omit<SiemDestinations, 'id'>>;

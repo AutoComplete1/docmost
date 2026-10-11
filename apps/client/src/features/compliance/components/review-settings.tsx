@@ -73,7 +73,7 @@ export default function ReviewSettings({
     }
   };
 
-  const [intervalDays, setIntervalDays] = useState<number | string>(90);
+  const [intervalDays, setIntervalDays] = useState<number | string | bigint>(90);
   const [note, setNote] = useState("");
 
   useEffect(() => {

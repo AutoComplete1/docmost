@@ -5,7 +5,7 @@
 docker-compose.local.yml
 data
 # compiled output
-/dist
+dist
 /node_modules
 
 # Logs

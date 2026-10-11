@@ -28,6 +28,7 @@ import ReviewBanner from "@/features/compliance/components/review-banner.tsx";
 import ChangeLogBanner from "@/features/compliance/components/change-log-banner.tsx";
 import clsx from "clsx";
 import { currentPageEditModeAtom } from "@/features/editor/atoms/editor-atoms.ts";
+import { EmptyPageGetStarted } from "@/features/editor/components/empty-page/empty-page-get-started";
 
 const MemoizedTitleEditor = React.memo(TitleEditor);
 const MemoizedPageEditor = React.memo(PageEditor);
@@ -49,6 +50,7 @@ export interface FullEditorProps {
   slugId: string;
   title: string;
   content: string;
+  spaceId: string;
   spaceSlug: string;
   editable: boolean;
   creator?: PageUser;
@@ -61,6 +63,7 @@ export function FullEditor({
   title,
   slugId,
   content,
+  spaceId,
   spaceSlug,
   editable,
   creator,
@@ -92,6 +95,7 @@ export function FullEditor({
       fluid={fullPageWidth}
       size={!fullPageWidth && 900}
       className={classes.editor}
+      style={{ display: "flex", flexDirection: "column" }}
     >
       {editorToolbarEnabled && editable && isEditMode && (
         <MemoizedFixedToolbar />
@@ -116,6 +120,11 @@ export function FullEditor({
         editable={editable}
         content={content}
         canComment={canComment}
+      />
+      <EmptyPageGetStarted
+        pageId={pageId}
+        spaceId={spaceId}
+        editable={editable}
       />
     </Container>
   );

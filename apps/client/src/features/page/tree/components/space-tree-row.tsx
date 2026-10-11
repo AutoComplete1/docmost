@@ -8,11 +8,13 @@ import {
   IconChevronRight,
   IconFileDescription,
   IconPlus,
+  IconTable,
 } from "@tabler/icons-react";
 
 import EmojiPicker from "@/components/ui/emoji-picker.tsx";
 import { queryClient } from "@/main.tsx";
 import { buildPageUrl } from "@/features/page/page.utils.ts";
+import { getPageTitle } from "@/features/page/page.utils";
 import { getPageById } from "@/features/page/services/page-service.ts";
 import {
   useUpdatePageMutation,
@@ -166,7 +168,13 @@ export function SpaceTreeRow({
         <EmojiPicker
           onEmojiSelect={handleEmojiSelect}
           icon={
-            node.icon ? node.icon : <IconFileDescription size="18" />
+            node.icon ? (
+              node.icon
+            ) : node.isBase ? (
+              <IconTable size={18} />
+            ) : (
+              <IconFileDescription size="18" />
+            )
           }
           readOnly={!canEdit}
           removeEmojiAction={handleRemoveEmoji}
@@ -174,7 +182,7 @@ export function SpaceTreeRow({
         />
       </div>
 
-      <span className={classes.text}>{node.name || t("untitled")}</span>
+      <span className={classes.text}>{getPageTitle(node.name, node.isBase, t)}</span>
 
       <div className={classes.actions}>
         <NodeMenu node={node} canEdit={canEdit} />
@@ -220,8 +228,12 @@ function PageArrow({
       <span
         aria-hidden
         title={reviewStatus ? t("NIS-2 review") : undefined}
-        className={classes.reviewDotWrap}
-        style={{ color: `var(--mantine-color-${color}-6)` }}
+        className={`${classes.reviewDotWrap} ${classes.actionIcon}`}
+        style={
+          reviewStatus
+            ? { color: `var(--mantine-color-${color}-6)` }
+            : undefined
+        }
       >
         {(reviewStatus === "due" || reviewStatus === "overdue") && (
           <span className={classes.reviewPulseRing} />
@@ -235,7 +247,9 @@ function PageArrow({
     <ActionIcon
       size={20}
       variant="subtle"
-      c={color}
+      color="gray"
+      c={reviewStatus ? color : undefined}
+      className={classes.actionIcon}
       aria-label={isOpen ? t("Collapse") : t("Expand")}
       aria-expanded={isOpen}
       tabIndex={-1}
@@ -287,8 +301,9 @@ function CreateNode({
 
   return (
     <ActionIcon
-      variant="transparent"
-      c="gray"
+      variant="subtle"
+      color="gray"
+      className={classes.actionIcon}
       aria-label={t("Create subpage of {{name}}", { name: node.name || t("untitled") })}
       tabIndex={-1}
       onClick={(e) => {
